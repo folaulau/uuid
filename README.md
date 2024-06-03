@@ -13,7 +13,11 @@ This project implements a simple UUID generator based on the UUID version 1 spec
   - [Running the Application](#running-the-application)
   - [API Endpoints](#api-endpoints)
 - [Question 2: Auditing System Design](#question-2-auditing-system-design)
-- [License](#license)
+  - [Design Overview](#design-overview)
+  - [UUID Generation and Storage](#uuid-generation-and-storage)
+  - [Data Persistence](#data-persistence)
+  - [Pagination](#pagination)
+  - [API Endpoint](#api-endpoint)
 
 ## Description
 
@@ -48,17 +52,14 @@ This project generates UUIDs using the UUID version 1 specification, which inclu
     mvn clean install
     ```
 
-## Usage
+3. Run tests using Maven:
+    ```sh
+    mvn clean test
+    ```
 
-### Running the Application
+### Question 2: Auditing System Design
 
-Run the application using Maven:
-```sh
-mvn spring-boot:run
-
-## Question 2: Auditing System Design
-
-### Design Overview
+#### Design Overview
 
 For auditing purposes, we need to be able to list all the UUIDs generated on a given day. Writes are very frequent and are in the critical path, while reads are infrequent. Here’s how we designed the system to meet these requirements:
 
