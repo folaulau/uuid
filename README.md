@@ -55,3 +55,32 @@ This project generates UUIDs using the UUID version 1 specification, which inclu
 Run the application using Maven:
 ```sh
 mvn spring-boot:run
+
+## Question 2: Auditing System Design
+
+### Design Overview
+
+For auditing purposes, we need to be able to list all the UUIDs generated on a given day. Writes are very frequent and are in the critical path, while reads are infrequent. Here’s how we designed the system to meet these requirements:
+
+#### UUID Generation and Storage
+
+- UUIDs are generated using the UUID version 1 specification.
+- Each generated UUID is stored in an H2 in-memory database along with a timestamp of when it was created.
+- The `UID` entity class represents the UUID and includes fields for the UUID string and the creation timestamp.
+
+#### Data Persistence
+
+- We use Spring Data JPA for ORM and repository management.
+- The `UIDRepository` interface extends `JpaRepository` to provide basic CRUD operations.
+- We added a custom query method `findByDate` to fetch UUIDs created on a specific date. This method uses a native query to cast the `createdAt` timestamp to a date and supports pagination to handle potentially large datasets.
+
+#### Pagination
+
+- To handle potentially large datasets, the `findByDate` method supports pagination. This allows us to efficiently retrieve subsets of the data without loading everything into memory.
+- The `UIDDAOImp` class implements the `UIDDAO` interface and uses the repository to perform database operations, including the paginated query for fetching UUIDs by date.
+
+#### API Endpoint
+
+- A RESTful endpoint is provided to access the UUIDs generated on a given day with pagination.
+- The `UIDController` class handles incoming HTTP requests and uses the `UIDDAO` service to interact with the database.
+
