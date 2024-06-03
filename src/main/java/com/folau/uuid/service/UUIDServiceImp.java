@@ -5,11 +5,14 @@ import com.folau.uuid.dao.UIDDAO;
 import com.folau.uuid.dao.UIDRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.net.NetworkInterface;
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Enumeration;
@@ -21,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class UUIDServiceImp implements UUIDService {
 
     @Autowired
-    private UIDDAO uiddao;
+    private UIDDAO uidDAO;
 
     private final long nodeId = getNodeId();
     private final SecureRandom secureRandom = new SecureRandom();
@@ -46,9 +49,14 @@ public class UUIDServiceImp implements UUIDService {
                 timeLow, timeMid, timeHiAndVersion,
                 clockSeqHiAndReserved, clockSeq & 0xFF, nodeId);
 
-        uiddao.save(new UID(null, uuid, now));
+        uidDAO.save(new UID(null, uuid, now));
 
         return uuid;
+    }
+
+    @Override
+    public Page<UID> getByDate(LocalDate date, Pageable pageable) {
+        return uidDAO.getByDate(date, pageable);
     }
 
     private long getNodeId() {
